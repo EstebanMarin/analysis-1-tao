@@ -30,8 +30,8 @@ If you have a hypothesis `h : a = b`, then `rw [h]` will replace all
 occurrences of `a` with `b` in the goal.
 -/
 
-theorem tutorial_level_2 (x y : ℕ) (h : x = y) : x + 0 = y := by
-  rw [h]
+theorem tutorial_level_2 (x y : ℕ) (h₁ : x = y) : x + 0 = y := by
+  rw [h₁]
   rfl
 
 /-
@@ -42,7 +42,7 @@ For example, `Nat.add_zero` says that `n + 0 = n`.
 -/
 
 theorem tutorial_level_3 (n : ℕ) : n + 0 = n := by
-  rw [Nat.add_zero]
+  rfl
 
 /-
 ## Level 4: The `exact` tactic
@@ -171,3 +171,9 @@ axiom and_commut: ∀ p q: Prop, p ∧ q → q ∧ p
 variable (p q : Prop)
 
 #check and_commut p q
+
+axiom modus_ponens:
+  ∀ p q: Prop,
+  (p → q) → p → q
+
+#check modus_ponens

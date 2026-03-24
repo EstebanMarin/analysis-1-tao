@@ -5,13 +5,13 @@ inductive MyNat: Type where
   | zero : MyNat 
   | succ : MyNat → MyNat
 
-inductive AExp: Type where 
+inductive AExp: Type where
   | num: ℤ → AExp
   | var: String → AExp
   | add: AExp → AExp → AExp
   | sub: AExp → AExp → AExp
   | mul: AExp → AExp → AExp
-  | div: AExp → AExp → AExp
+  | div: AExp → AExp → AExpd
 
 inductive MyList (α : Type) where
   | nil : MyList α
