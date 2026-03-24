@@ -1,4 +1,6 @@
 * Objective
 This will document a personal journey of learning analisys 1 and and lean 4 using Terrance Tao book and open source version of the book. The learning process will be documented as online learning matereal that I want to deploy into aws using the latest devops standards to minimize cost and avoid nasty surprises.
 * Deliverables
-** Splice analisys book by
+** Splice analisys book by chapter
+** create a folder per chapter in each chapter youl put each pdf chapter
+lets starte with that
