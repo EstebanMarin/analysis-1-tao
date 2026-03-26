@@ -195,6 +195,7 @@ theorem Nat.recurse_zero (f : Nat → Nat → Nat) (c : Nat) :
 theorem Nat.recurse_succ (f : Nat → Nat → Nat) (c : Nat) (n : Nat) :
     recurse f c (n++) = f n (recurse f c n) := by rfl
 
+
 /-! # SECTION 2.2: ADDITION -/
 
 /-!
