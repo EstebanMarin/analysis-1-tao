@@ -27,7 +27,7 @@ namespace Chapter2
 
 We start at the very beginning: constructing natural numbers from scratch using only
 logic and the **Peano axioms**.
--/
+n-/
 
 inductive Nat where
   | zero : Nat
@@ -37,37 +37,155 @@ deriving Repr, DecidableEq
 /-- Axiom 2.1: 0 is a natural number -/
 instance Nat.instZero : Zero Nat := ⟨Nat.zero⟩
 
-/-- Axiom 2.2: Successor function -/
-postfix:max "++" => Nat.succ
+/-- Axiom 2.2: Successor function
+  postfix:max "++" => Nat.succ — declares a notation (syntactic sugar).
 
-/-- Definition 2.1.3: Numerals -/
+  - postfix — the operator goes after its argument. As opposed to prefix
+  (before) or infix (between two args).
+  - :max — the precedence level. max is the highest possible precedence, meaning
+   ++ binds tighter than anything. So n + 1++ parses as n + (1++), not (n +
+  1)++.
+  - "++" — the literal symbol you type.
+  - => Nat.succ — what it expands to. Nat.succ is the successor constructor of
+  Nat.
+
+  ---
+  What it reads in plain English
+
+  ▎ "Let n++ be notation for Nat.succ n."
+
+  So after this declaration:
+
+  0++      -- means Nat.succ 0  (i.e., 1)
+  0++++    -- means Nat.succ (Nat.succ 0)  (i.e., 2)
+
+ -/
+postfix:max "++" => Nat.succ      
+
+/-- Definition 2.1.3: Numerals 
+Some times you just need to skim through the syntax and understand the singleton idea.
+-/
+
+/--   _root_.Nat.rec 0 (fun _ m => m++) n
+
+  This is primitive recursion on n. Nat.rec has the shape:
+
+  Nat.rec (base) (step) (target)
+
+  ┌────────┬────────────────┬──────────────────────────────────────────────────────────┐
+  │  Part  │     Value      │                         Meaning                          │
+  ├────────┼────────────────┼──────────────────────────────────────────────────────────┤
+  │ base   │ 0              │ when n = 0, return 0                                     │
+  ├────────┼────────────────┼──────────────────────────────────────────────────────────┤
+  │ step   │ fun _ m => m++ │ when n = succ k, take the previous result m and apply ++ │
+  ├────────┼────────────────┼──────────────────────────────────────────────────────────┤
+  │ target │ n              │ the number to recurse on                                 │
+  └────────┴────────────────┴──────────────────────────────────────────────────────────┘
+
+  So it counts up from 0 by applying ++ exactly n times:
+
+  3  →  0++ ++ ++   →  Nat.succ (Nat.succ (Nat.succ 0))
+
+-/
+
+
 instance Nat.instOfNat {n : _root_.Nat} : OfNat Nat n where
-  ofNat := _root_.Nat.rec 0 (fun _ m => m++) n
+  ofNat := _root_.Nat.rec 0 (fun _ m ↦ m++) n
 
 instance Nat.instOne : One Nat := ⟨1⟩
+/-- All we are really saying here is that -/
+example : (1 : Nat) = Nat.succ 0 := by rfl
+example : (1 : Nat) = 0++ := by rfl
 
-/-- Axiom 2.3: 0 is not a successor -/
-theorem Nat.succ_ne_zero (n : Nat) : n++ ≠ 0 := by
-  intro h
-  injection h
+example : (2 : Nat) = (0++)++ := by rfl
 
-/-- Axiom 2.4: Successor is injective -/
+/-- Definition 2.1.4 3 is a natural number -/
+
+example : (0++++++) = 3 := by rfl 
+example : (2++) = 3 := by rfl
+example : (1++) = 2 := by rfl
+example : 2 = Nat.succ (Nat.succ 0) := by rfl
+example : 1 = Nat.succ 0 := by rfl
+
+/-- proposition 2.1.6 4 is not equal to 0 
+ What 4 actually is
+
+  4 = Nat.succ 3
+    = Nat.succ (Nat.succ 2)
+    = Nat.succ (Nat.succ (Nat.succ 1))
+    = Nat.succ (Nat.succ (Nat.succ (Nat.succ 0)))
+
+  So h₁ : 4 = 0 is really:
+  h₁ : Nat.succ (Nat.succ (Nat.succ (Nat.succ 0))) = Nat.zero
+
+  ---
+  What injection does
+
+  It looks at the outermost constructors:
+  - Left side: Nat.succ (...)
+  - Right side: Nat.zero
+
+  Different constructors → immediate contradiction → goal closed.
+-/
+theorem Nat.four_ne_zero: 4 ≠ 0 := by
+  intro h₁
+  injection h₁
+
+
+
+/-- Axiom 2.3: 0 is not a successor 
+To avoid wrap-around issue lets say
+-/
+theorem Nat.succ_ne_zero (n: Nat): n++ ≠ 0 := by
+  intro h₁
+  injection h₁
+
+
+/-- Axiom 2.4: Successor is injective
+ What happens step by step
+
+  You have:
+  h : n++ = m++
+  -- which is:
+  h : Nat.succ n = Nat.succ m
+
+  injection h looks at h and says:
+
+  ▎ "Both sides use the same constructor Nat.succ. Since constructors are injective, the arguments must be equal."
+
+  It automatically produces a new hypothesis:
+  h' : n = m
+
+  And since that's exactly your goal, the proof is complete.
+
+ 
+  ---
+  The mental model
+
+  injection just peels off the outer constructor:
+
+  Nat.succ n = Nat.succ m
+           ↓ injection
+           n = m
+ -/
+
 theorem Nat.succ_inj {n m : Nat} (h : n++ = m++) : n = m := by
   injection h
 
 /-- Axiom 2.5: Mathematical Induction -/
 theorem Nat.induction {P : Nat → Prop}
-    (hbase : P 0)
-    (hind : ∀ n, P n → P (n++)) :
-    ∀ n, P n := by
-  intro n
-  induction n with
-  | zero => exact hbase
-  | succ n ih => exact hind n ih
+  (h₀: P 0) 
+  (h₁: ∀ n, P n → P (n++)):
+  ∀ n, P n := by
+    intro n 
+    induction n with 
+      | zero => exact h₀
+      | succ n α => exact h₁ n α 
+
 
 /-- Recursion principle for defining functions -/
 abbrev Nat.recurse (f : Nat → Nat → Nat) (c : Nat) : Nat → Nat :=
-  fun n => match n with
+  fun n ↦ match n with
   | 0 => c
   | n++ => f n (recurse f c n)
 
