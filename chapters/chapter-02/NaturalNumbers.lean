@@ -37,6 +37,8 @@ deriving Repr, DecidableEq
 /-- Axiom 2.1: 0 is a natural number -/
 instance Nat.instZero : Zero Nat := ⟨Nat.zero⟩
 
+#check 0
+
 /-- Axiom 2.2: Successor function
   postfix:max "++" => Nat.succ — declares a notation (syntactic sugar).
 
@@ -66,6 +68,9 @@ postfix:max "++" => Nat.succ
 Some times you just need to skim through the syntax and understand the singleton idea.
 -/
 
+instance Nat.instOfNat {n : _root_.Nat} : OfNat Nat n where
+  ofNat := _root_.Nat.rec 0 (fun _ m ↦ m++) n
+
 /--   _root_.Nat.rec 0 (fun _ m => m++) n
 
   This is primitive recursion on n. Nat.rec has the shape:
@@ -87,11 +92,6 @@ Some times you just need to skim through the syntax and understand the singleton
   3  →  0++ ++ ++   →  Nat.succ (Nat.succ (Nat.succ 0))
 
 -/
-
-
-instance Nat.instOfNat {n : _root_.Nat} : OfNat Nat n where
-  ofNat := _root_.Nat.rec 0 (fun _ m ↦ m++) n
-
 instance Nat.instOne : One Nat := ⟨1⟩
 /-- All we are really saying here is that -/
 example : (1 : Nat) = Nat.succ 0 := by rfl
