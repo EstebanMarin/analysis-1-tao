@@ -98,18 +98,91 @@ section
 variable (h: False) 
 example : A := False.elim h
 example : True := trivial
-
+end
 -- Bi - Implication
 section
 example: A ↔ B := 
  Iff.intro
   (λ h₁ : A ↦ show B from sorry)
   (λ h₂ : B ↦ show A from sorry)
+
+section
+variable (h₁: A ↔ B)(h₂: A)(h₃ : B)
+example : B := Iff.mp h₁ h₂
+example : A := Iff.mpr h₁ h₃
+end 
 end
 
+-- proof by contradiction
 
+section
+  open Classical
+
+  example : A :=
+  byContradiction
+    (fun h : ¬ A ↦
+      show False from sorry)
+end
+
+-- example 
+section
+example (A B C : Prop) : A ∧ (B ∨ C) → (A ∧ B) ∨ (A ∧ C) :=
+λ h1 ↦ Or.elim (And.right h1)
+  (λ h2 ↦ Or.inl (And.intro (And.left h1) h2))
+  (λ h2 ↦ Or.inr (And.intro (And.left h1) h2))
+end
+
+-- TACTICS! 
+section
+-- term mode
+example (A B C : Prop) : A ∧ (B ∨ C) → (A ∧ B) ∨ (A ∧ C) :=
+fun h1 : A ∧ (B ∨ C) ↦
+Or.elim (And.right h1)
+  (fun h2 : B ↦
+    show (A ∧ B) ∨ (A ∧ C) from Or.inl (And.intro (And.left h1) h2))
+  (fun h2 : C ↦
+    show (A ∧ B) ∨ (A ∧ C)
+      from Or.inr (And.intro (And.left h1) h2))
+
+example (A B C : Prop) : A ∧ (B ∨ C) → (A ∧ B) ∨ (A ∧ C) := by
+  intro (h₁: A ∧ (B ∨ C))
+  cases h₁ with 
+      | intro h1 h2 => cases h2 with 
+      | inl h2 =>
+      apply Or.inl
+      apply And.intro
+      exact h1
+      exact h2
+      | inr h2 => 
+      apply Or.inr
+      apply And.intro
+      exact h1
+      exact h2
 
 end
+
+-- forward reasoning 
+section
+variable (h₁ : A → B)(h₂ : B → C)
+
+-- term mode
+example : A → C := 
+  λ ha : A ↦ 
+  have hb : B := h₁ ha
+  show C from h₂ hb
+
+
+
+-- tactics entering with by 
+example : A → C := by
+   intro (ha: A)
+   have hb: B := h₁ ha  
+   show C 
+   exact h₂ hb
+end
+     
+     
+     
 
 
 end Notes
