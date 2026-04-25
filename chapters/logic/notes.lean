@@ -205,12 +205,10 @@ intro (ha: A)(hc: ¬ A ∧ B)
 have notha: ¬A := And.left hc
 apply notha ha
 
- 
+example : ¬ (A ∧ B) → (A → ¬ B) := by
+intro (h₁: ¬ ( A ∧ B))(ha : A)(hb : B)
+apply h₁ (And.intro ha hb)
 
-
-
-example : ¬ (A ∧ B) → (A → ¬ B) :=
-sorry
 
 example (h₁ : A ∨ B) (h₂ : A → C) (h₃ : B → D) : C ∨ D :=
 sorry
