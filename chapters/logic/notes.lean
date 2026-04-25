@@ -200,8 +200,14 @@ have func:  A → B := And.right h₁
 apply func ha
 
 
-example : A → ¬ (¬ A ∧ B) :=
-sorry
+example : A → ¬ (¬ A ∧ B) := by
+intro (ha: A)(hc: ¬ A ∧ B)
+have notha: ¬A := And.left hc
+apply notha ha
+
+ 
+
+
 
 example : ¬ (A ∧ B) → (A → ¬ B) :=
 sorry
