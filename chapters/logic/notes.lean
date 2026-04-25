@@ -162,7 +162,7 @@ example (A B C : Prop) : A ∧ (B ∨ C) → (A ∧ B) ∨ (A ∧ C) := by
 end
 
 -- forward reasoning 
-section
+section Forward
 variable (h₁ : A → B)(h₂ : B → C)
 
 -- term mode
@@ -179,10 +179,50 @@ example : A → C := by
    have hb: B := h₁ ha  
    show C 
    exact h₂ hb
-end
+end Forward
      
-     
-     
+section theorems.Definition
+def triple_and (A B C: Prop) : Prop := A ∧ (B ∨ C)
+variable (D E F G : Prop)
+#check triple_and (B ∧ C) (F ∧ G) (¬ F ∧ G)
+
+theorem and_commute {A B: Prop}: A ∧ B → B ∧ A :=
+  λ h ↦ And.intro (And.right h) (And.left h)
+
+-- excercises 
+
+section exercises 
+
+example : A ∧ (A → B) → B := by
+intro (h₁: A ∧ (A → B))
+have ha: A := And.left h₁
+have func:  A → B := And.right h₁
+apply func ha
+
+
+example : A → ¬ (¬ A ∧ B) :=
+sorry
+
+example : ¬ (A ∧ B) → (A → ¬ B) :=
+sorry
+
+example (h₁ : A ∨ B) (h₂ : A → C) (h₃ : B → D) : C ∨ D :=
+sorry
+
+example (h : ¬ A ∧ ¬ B) : ¬ (A ∨ B) :=
+
+
+
+sorry
+
+example : ¬ (A ↔ ¬ A) :=
+sorry
+
+end exercises
+
+
+end theorems.Definition
+
 
 
 end Notes
