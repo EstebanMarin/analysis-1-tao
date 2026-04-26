@@ -215,8 +215,6 @@ sorry
 
 example (h : ¬ A ∧ ¬ B) : ¬ (A ∨ B) :=
 
-
-
 sorry
 
 example : ¬ (A ↔ ¬ A) :=
@@ -227,6 +225,29 @@ end exercises
 
 end theorems.Definition
 
+section chapter9
+
+axiom U : Type
+
+axiom c : U
+axiom f : U → U
+axiom g : U → U → U
+axiom P : U → Prop
+axiom R : U → U → Prop
+
+variable (x y : U)
+
+#check c
+#check f c
+#check g x y
+#check g x (f c)
+
+#check P (g x (f c))
+#check R x y
+
+
+
+end chapter9
 
 
 end Notes
