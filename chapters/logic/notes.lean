@@ -1,6 +1,5 @@
 import Mathlib.Tactic
 
-
 namespace Notes
 
 
@@ -244,6 +243,41 @@ variable (x y : U)
 
 #check P (g x (f c))
 #check R x y
+
+namespace hidden
+
+axiom mul : ℕ → ℕ → ℕ
+axiom add : ℕ → ℕ → ℕ
+axiom square : ℕ → ℕ
+axiom even : ℕ → Prop
+axiom odd : ℕ → Prop
+axiom prime : ℕ → Prop
+axiom divides : ℕ → ℕ → Prop
+axiom lt : ℕ → ℕ → Prop
+axiom zero : ℕ
+axiom one : ℕ
+
+variable (w x y z : ℕ)
+
+#check mul x y
+#check add x y
+#check square x
+#check even x
+
+#check even (x + y + z)
+
+#check Even (x + y + z) ∧ Prime ((x + 1) * y * y)
+#check ¬ (square (x + y * z) = w) ∨ x + y < z
+#check x < y ∧ Even x ∧ Even y → x + 1 < y
+
+variable (Point Line : Type)
+variable (lies_on : Point → Line → Prop)
+
+#check ∀ (p q : Point) (L M : Line),
+        p ≠ q → lies_on p L → lies_on q L → lies_on p M →
+          lies_on q M → L = M
+
+end hidden
 
 
 
