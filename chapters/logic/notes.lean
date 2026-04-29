@@ -277,6 +277,11 @@ variable (lies_on : Point → Line → Prop)
         p ≠ q → lies_on p L → lies_on q L → lies_on p M →
           lies_on q M → L = M
 
+
+#check ∀x, (Even x ∨ Odd x) ∧ ¬ (Even x ∧ Odd x)
+
+
+
 end hidden
 
 
