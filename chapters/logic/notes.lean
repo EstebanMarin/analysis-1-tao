@@ -280,9 +280,34 @@ variable (lies_on : Point → Line → Prop)
 
 #check ∀x, (Even x ∨ Odd x) ∧ ¬ (Even x ∧ Odd x)
 
+namespace eliminationRule
+variable (U: Type)
+variable (P: U → Prop)
+variable (h : ∀ x, P x)
+variable (a : U)
+
+
+example : P a :=
+show P a from h a
+
+variable (A B : U → Prop)
+
+
+example (h₁ : ∀ x, A x → B x) (h₂ : ∀ x, A x) : ∀ x, B x := 
+  λ α ↦ 
+    have h₃ := h₂ α
+    have h₄  := h₁ α
+    show B α from h₄ h₃
+
+example (h₁ : ∀ x, A x → B x) (h₂ : ∀ x, A x) : ∀ x, B x := 
+  λ α ↦ show B α from h₁ α (h₂ α)
+
+end eliminationRule
 
 
 end hidden
+
+
 
 
 
